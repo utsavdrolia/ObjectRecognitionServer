@@ -1,11 +1,12 @@
 package org.crowdcache.server;
 
-import org.crowdcache.objrec.opencv.KeypointDescList;
 import org.crowdcache.objrec.opencv.Recognizer;
 import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
+import org.opencv.core.Core;
 import org.zeromq.ZMQ;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public class ObjRecServer extends Server
      * @param address
      * @param dblistpath
      */
-    public ObjRecServer(String address, Map<String, KeypointDescList> dblistpath)
+    public ObjRecServer(String address, String dblistpath) throws IOException
     {
         super(address);
         this.recognizer = new Recognizer(new ORB(), new BFMatcher_HAM(), dblistpath);
@@ -33,7 +34,19 @@ public class ObjRecServer extends Server
     @Override
     public byte[] process(byte[] data)
     {
+        System.out.println("Received");
         String reply = recognizer.recognize(data);
         return reply.getBytes(ZMQ.CHARSET);
+    }
+
+    public static void main(String args[]) throws IOException
+    {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        if (args.length == 1)
+        {
+            String DBdirpath = args[0];
+            ObjRecServer server = new ObjRecServer("192.168.1.13:50505", DBdirpath);
+            server.start();
+        }
     }
 }
