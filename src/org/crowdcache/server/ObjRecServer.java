@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class ObjRecServer extends Server
 {
-    Recognizer recognizer;
+    private Recognizer recognizer;
     /**
      * Provide address at which to listen
      * @param address
@@ -35,7 +35,10 @@ public class ObjRecServer extends Server
     public byte[] process(byte[] data)
     {
         System.out.println("Received");
+        Long start = System.currentTimeMillis();
         String reply = recognizer.recognize(data);
+        Long total = System.currentTimeMillis() - start;
+        reply = reply + "," + total.toString();
         return reply.getBytes(ZMQ.CHARSET);
     }
 
