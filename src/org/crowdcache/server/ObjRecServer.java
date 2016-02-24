@@ -48,7 +48,7 @@ public class ObjRecServer extends Server
         if (args.length == 1)
         {
             String DBdirpath = args[0];
-            ObjRecServer server = new ObjRecServer("192.168.1.13:50505", DBdirpath);
+            ObjRecServer server = new ObjRecServer("192.168.1.9:50505", DBdirpath);
             server.start();
         }
     }
